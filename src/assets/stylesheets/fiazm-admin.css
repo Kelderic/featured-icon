@@ -1,36 +1,70 @@
-/* Remove the Details Sidebar on Media Overlay */
-.no-sidebar .media-frame-title,
-.no-sidebar .media-frame-content,
-.no-sidebar .media-frame-router {
+/**********************************************************************************************/
+/**** HIDE THE LEFT SIDEBAR *******************************************************************/
+/**********************************************************************************************/
+
+.fiazm-media-frame .media-frame-title,
+.fiazm-media-frame .media-frame-content,
+.fiazm-media-frame .media-frame-router {
 	left: 0;
 }
 
-.no-sidebar .media-frame-menu .media-menu a,
-.no-sidebar .media-frame-menu .media-menu div {
-	display: none;
-}
-.no-sidebar.hide-router .media-frame-menu .media-menu a:first-child {
-	display:inline-block;
-}
-
-.no-sidebar .media-frame-menu {
+.fiazm-media-frame .media-frame-menu {
 	top:auto;
 	height:60px;
 	left:16px;
 }
 
-.no-sidebar .media-frame-menu .media-menu {
+.fiazm-media-frame .media-frame-menu .media-menu {
 	background-color:transparent;
 	border:none;
 	padding: 15px 0px;
 }
 
-#featuredicondiv .media-modal-icon {
-	background-position: -95px 5px;
+.fiazm-media-frame .media-frame-menu .media-menu a,
+.fiazm-media-frame .media-frame-menu .media-menu div {
+	display: none;
 }
 
+.fiazm-media-frame.hide-router .media-frame-menu .media-menu a:first-child {
+	display:inline-block;
+}
+
+
+
 /**********************************************************************************************/
-/**** STYLES FOR THE THUMBNAIL PREVIEW ********************************************************/
+/**** HIDE THE RIGHT SIDEBAR ******************************************************************/
+/**********************************************************************************************/
+
+.fiazm-media-frame.no-details-sidebar .attachments-browser .media-toolbar,
+.fiazm-media-frame.no-details-sidebar .attachments-browser .attachments,
+.fiazm-media-frame.no-details-sidebar .attachments-browser .uploader-inline {
+	right: 0;
+}
+
+.fiazm-media-frame.no-details-sidebar .media-sidebar,
+.fiazm-media-frame.no-details-sidebar .media-toolbar-secondary,
+.fiazm-media-frame.no-details-sidebar .media-frame .attachment .describe {
+	display: none;
+}
+
+
+
+/**********************************************************************************************/
+/**** TWEAK THE BOTTOM TO MAKE UP FOR NO LEFT SIDEBAR *****************************************/
+/**********************************************************************************************/
+
+.fiazm-media-frame .media-frame-toolbar .media-toolbar {
+	border-top:0;
+}
+
+.fiazm-media-frame .media-frame-content {
+	border-bottom: 1px solid rgb(221, 221, 221);
+}
+
+
+
+/**********************************************************************************************/
+/**** THUMBNAIL PREVIEW ***********************************************************************/
 /**********************************************************************************************/
 
 #featuredicondiv ul {
@@ -65,7 +99,7 @@
 	display:none;
 	position:absolute;
 	right:5px;
-	top:0px;
+	top:5px;
 	background-color:transparent;
 	font-family:"dashicons";
 	width: 24px;

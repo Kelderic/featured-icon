@@ -54,19 +54,14 @@ class FIAZM_Controller {
 				// VARIABLE CALLED fiazmInfoFromPHP, WHICH IS AN OBJECT WITH A KEY OF 'wpAdminAjaxURL' WHICH WILL HAVE THE
 				// CORRECT VALUE
 
-				wp_localize_script( 'fiazm-script-admin', 'fiazmInfoFromPHP', [ 'wpAdminAjaxURL' => admin_url('admin-ajax.php') ] );
+				wp_localize_script( 'fiazm-script-admin', 'fiazmInfoFromPHP', [
+					'wpAdminAjaxURL' => admin_url('admin-ajax.php'),
+					'showDetailSidebar' => apply_filters( 'fiazm_show_sidebar', false )
+				]);
 
 				// ENQUEUE OUT STYLESHEETS
 
 				wp_enqueue_style( 'fiazm-style-admin', plugin_dir_url( FIAZM_PLUGIN_FILE ) . 'assets/stylesheets/fiazm-admin.css', [], FIAZM_PLUGIN_VERSION );
-
-				$showSidebar = apply_filters( 'fiazm_show_sidebar', false );
-
-				if ( $showSidebar = false ) {
-
-					wp_enqueue_style( 'fiazm-style-admin-hidesidebar', plugin_dir_url( FIAZM_PLUGIN_FILE ) . 'assets/stylesheets/fiazm-admin-hidesidebar.css', [], FIAZM_PLUGIN_VERSION );
-
-				}
 
 			}
 

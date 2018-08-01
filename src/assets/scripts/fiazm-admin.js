@@ -85,7 +85,11 @@
 
 			self.frame.on('ready', function() {
 
-				self.el.modal.classList.add('no-sidebar');
+				self.el.modal.classList.add('fiazm-media-frame');
+
+				if ( ! fiazmInfoFromPHP.showDetailSidebar ) {
+					self.el.modal.classList.add('no-details-sidebar');
+				}
 
 			});
 
