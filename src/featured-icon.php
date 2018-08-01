@@ -1,12 +1,12 @@
 <?php
 /*
- * Plugin Name:       Featured Galleries
- * Plugin URI:        http://wordpress.org/plugins/featured-galleries/
- * Description:       WordPress ships with a Featured Image functionality. This adds a very similar functionality, but allows for full featured galleries with multiple images.
- * Version:           2.0.1
+ * Plugin Name:       Featured Icon
+ * Plugin URI:        http://wordpress.org/plugins/featured-icon/
+ * Description:       WordPress ships with a Featured Image functionality. This plugins adds a similar functionality, labeled as a Featured Icon. Forked from Featured Galleries v2.0.1
+ * Version:           1.0.0
  * Author:            Andy Mercer
  * Author URI:        http://www.andymercer.net
- * Text Domain:       featured-galleries
+ * Text Domain:       featured-icon
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 */
@@ -16,9 +16,9 @@
 /*************************  DEFINE CONSTANTS  **************************/
 /***********************************************************************/
 
-define( 'FG_PLUGIN_VERSION', '2.0.0' );
+define( 'FIAZM_PLUGIN_VERSION', '1.0.0' );
 
-define( 'FG_PLUGIN_FILE', __FILE__ );
+define( 'FIAZM_PLUGIN_FILE', __FILE__ );
 
 if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 
@@ -29,7 +29,7 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 		echo '
 			<div class="error below-h2">
 				<p>
-				 ' . sprintf( 'Featured Galleries requires PHP version 5.4 or greater. You are currently running version: %s. Please deactivate Featured Galleries or upgrade your PHP.', PHP_VERSION ) . '
+				 ' . sprintf( 'Featured Icon requires PHP version 5.4 or greater. You are currently running version: %s. Please deactivate Featured Galleries or upgrade your PHP.', PHP_VERSION ) . '
 				</p>
 			</div>
 		';
@@ -41,14 +41,14 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	/**********************  INCLUDE REQUIRED FILES  ***********************/
 	/***********************************************************************/
 
-	require_once( plugin_dir_path(FG_PLUGIN_FILE) . 'includes/controller.php' );
+	require_once( plugin_dir_path(FIAZM_PLUGIN_FILE) . 'includes/controller.php' );
 
-	require_once( plugin_dir_path(FG_PLUGIN_FILE) . 'includes/public-functions.php' );
+	require_once( plugin_dir_path(FIAZM_PLUGIN_FILE) . 'includes/public-functions.php' );
 
 	/***********************************************************************/
 	/*****************************  INITIATE  ******************************/
 	/***********************************************************************/
 
-	new FG_Controller();
+	new FIAZM_Controller();
 
 }

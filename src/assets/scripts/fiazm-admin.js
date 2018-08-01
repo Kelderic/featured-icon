@@ -1,6 +1,6 @@
 (function(window) {
 
-	FeaturedGalleryManager = (function( params ) {
+	FeaturedIconManager = (function( params ) {
 
 		// STORE ORIGINAL BUTTON VALUES
 
@@ -20,21 +20,21 @@
 
 			self.frame = null;
 			self.el = {
-				buttonSelect: document.querySelector('#fg_select'),
-				buttonRemove: document.querySelector('#fg_removeall'),
+				buttonSelect: document.querySelector('#fiazm_select'),
+				buttonRemove: document.querySelector('#fiazm_remove'),
 				modal: null,
-				HTMLPreview: document.querySelector('#fg-post-gallery'),
-				permMetadata: document.querySelector('#fg_perm_metadata'),
-				permNoncedata: document.querySelector('#fg_perm_noncedata'),
-				tempNoncedata: document.querySelector('#fg_temp_noncedata')
+				HTMLPreview: document.querySelector('#fiazm-post-icon'),
+				permMetadata: document.querySelector('#_fiazm_perm_metadata'),
+				permNoncedata: document.querySelector('#_fiazm_perm_noncedata'),
+				tempNoncedata: document.querySelector('#_fiazm_temp_noncedata'),
+				controlsWhenHasIcon: document.querySelectorAll('.fiazm-controls-has-icon'),
+				controlsWhenNoIcon: document.querySelectorAll('.fiazm-controls-no-icon')
 			};
 
 			// STORE ORIGINAL BUTTON VALUES
 
 			l10nOriginal = {
-				createNewGallery: wp.media.view.l10n.createNewGallery,
-				updateGallery: wp.media.view.l10n.updateGallery,
-				insertGallery: wp.media.view.l10n.insertGallery
+				insertIntoPost: wp.media.view.l10n.insertIntoPost
 			};
 
 			// IF EITHER BUTTON DOESN'T EXIST, EXIT GRACEFULLY
@@ -49,11 +49,11 @@
 
 			// CREATE THE MEDIA FRAME
 
-			self.frame = wp.media.frames.fg_frame = wp.media({
-				state: 'featured-gallery',
+			self.frame = wp.media.frames.fiazm_frame = wp.media({
+				state: 'featured-icon',
 				frame: 'post',
-				library : {
-					type : 'image'
+				library: {
+					type: 'image'
 				}
 			});
 
@@ -62,13 +62,15 @@
 
 			self.frame.states.add([
 				new wp.media.controller.Library({
-					id:         'featured-gallery',
-					title:      'Select Images for Gallery',
+					id:         'featured-icon',
+					title:      'Select Image to Use as Icon',
 					priority:   20,
-					toolbar:    'main-gallery',
-					filterable: 'uploaded',
+					toolbar:    'main-insert',
+					filterable: false,
+					date:       false,
+					searchable: false,
 					library:    wp.media.query( self.frame.options.library ),
-					multiple:   true,
+					multiple:   false,
 					editable:   false,
 					displaySettings: false,
 					displayUserSettings: false
@@ -85,8 +87,6 @@
 
 				self.el.modal.classList.add('no-sidebar');
 
-				fix_back_button();
-
 			});
 
 			// SPECIFY ACTION FOR THE 'open' ACTION
@@ -95,71 +95,47 @@
 
 				if ( self.el.permMetadata.value != '' ) {
 
-					var selection = self.frame.state().get('selection');
-					var imageIDs = self.el.permMetadata.value.split(',');
-					var editState = self.frame.state('gallery-edit');
-					var attachment;
+					attachment = wp.media.attachment(self.el.permMetadata.value);
 
-					// UPDATE SELECTION
+					attachment.fetch();
 
-					imageIDs.forEach(function(imageID) {
-						attachment = wp.media.attachment(imageID);
-						attachment.fetch();
-						selection.add( attachment );
-					});
+					if ( attachment ) {
 
-					self.frame.state('gallery-edit').set( 'library', selection );
-					self.frame.setState('gallery-edit');
+						self.frame.state().get('selection').add( attachment );
 
-					self.frame.modal.focusManager.focus();
+					}
 
 				}
+
+			});
+
+			// SPECIFY ACTION FOR THE 'close' ACTION
+
+			self.frame.on('close', function() {
+
+				// RESET THE MAIN BUTTON TEXT
+
+				wp.media.view.l10n.insertIntoPost = l10nOriginal.insertIntoPost;
 
 			});
 
 			// SPECIFY ACTION FOR THE 'update' ACTION. THIS HAPPENS WHEN
 			// AN IMAGE IS SELECTED
 
-			self.frame.on('update', function() {
+			self.frame.on('insert', function() {
 
-				var imageIDs = [];
-				var imageHTML = '';
+				var selectedImage = self.frame.state().get('selection').single();
 
-				self.frame.state().get('library').each(function(selectedImage) {
-					imageIDs.push(selectedImage.attributes.id);
-					if ( 'thumbnail' in selectedImage.attributes.sizes ) {
-						imageHTML += '<li><button type="button"></button><img id="' + selectedImage.attributes.id + '" src="' + selectedImage.attributes.sizes.thumbnail.url + '"></li>';
-					} else {
-						imageHTML += '<li><button type="button"></button><img id="' + selectedImage.attributes.id + '" src="' + selectedImage.attributes.sizes.full.url + '"></li>';
-					}
-				});
-
-				if ( imageIDs.length ) {
+				if ( selectedImage ) {
 
 					update_metabox({
-						HTMLPreview: imageHTML,
-						permMetadata: imageIDs.join(',')
+						HTMLPreview: '<a id="set-post-icon" href=""><img id="' + selectedImage.attributes.id + '" src="' + selectedImage.attributes.url + '"></a>',
+						permMetadata: selectedImage.attributes.id
 					}, self.el);
 
 					update_temp_metadata( self.el, self.postID );
 
 				}
-
-			});
-
-			self.frame.on('close', function() {
-
-				// RESET THE MAIN BUTTON TEXT
-
-				wp.media.view.l10n.createNewGallery = l10nOriginal.createNewGallery;
-				wp.media.view.l10n.updateGallery = l10nOriginal.updateGallery;
-				wp.media.view.l10n.insertGallery = l10nOriginal.insertGallery;
-
-			});
-
-			self.frame.on('content:render', function() {
-
-				fix_back_button();
 
 			});
 
@@ -192,43 +168,15 @@
 
 			self.el.HTMLPreview.addEventListener('click', function(event){
 
-				if ( event.target.tagName.toLowerCase() == 'button' ) {
+				event.preventDefault();
 
-					if (confirm('Are you sure you want to remove this image?')) {
+				// CUSTOMIZE THE MAIN BUTTON TEXT
 
-						// GET THE ID OF THE IMAGE THE USER WISHES TO REMOVE FROM GALLERY
+				wp.media.view.l10n.insertIntoPost = 'Select Icon';
 
-						var imageIDBeingRemoved = event.target.nextElementSibling.id;
+				// OPEN THE MODAL
 
-						// GET THE COMMA DELIMITED LIST OF IMAGE IDS IN THE GALLERY, THEN
-						// REMOVE THE SELECTED ID
-
-						var imageIDs = self.el.permMetadata.value;
-							imageIDs = imageIDs.replace( ',' + imageIDBeingRemoved, '' ).replace( imageIDBeingRemoved + ',', '' ).replace( imageIDBeingRemoved, '' );
-
-						// UPDATE THE METADATA VALUE WITH THE NEW LIST OF IMAGE IDS
-
-						self.el.permMetadata.value = imageIDs;
-
-						// REMOVE THE HTML PREVIEW
-
-						event.target.parentNode.parentNode.removeChild(event.target.parentNode);
-
-						// UPDATE THE CONTROLS
-
-						if ( self.el.permMetadata.value === '' ) {
-
-							update_metabox({
-								permMetadata: ''
-							}, self.el);							
-
-						}
-
-						update_temp_metadata( self.el, self.postID );
-
-					}
-
-				}
+				self.frame.open();
 
 			});
 
@@ -248,13 +196,21 @@
 				els.permMetadata.value = args.permMetadata;
 			}
 
+			var hasIconStyle = '', noIconStyle = '';
+
 			if ( ( args.HTMLPreview === '' ) || ( args.permMetadata === '' ) ) {
-				els.buttonRemove.style.display = 'none';
-				els.buttonSelect.textContent = 'Select Images';
+				hasIconStyle = 'none';
 			} else {
-				els.buttonRemove.style.display = '';
-				els.buttonSelect.textContent = 'Edit Selection';
+				noIconStyle = 'none';
 			}
+
+			els.controlsWhenNoIcon.forEach(function(el){
+				el.style.display = noIconStyle;
+			});
+
+			els.controlsWhenHasIcon.forEach(function(el){
+				el.style.display = hasIconStyle;
+			});
 
 		}
 
@@ -264,12 +220,12 @@
 
 				ajax({
 					method: 'post',
-					queryURL: fgInfoFromPHP.wpAdminAjaxURL,
+					queryURL: fiazmInfoFromPHP.wpAdminAjaxURL,
 					data: {
-						action: 'fg_save_temp_metadata', 
-						fg_post_id: postID, 
-						fg_temp_noncedata: els.tempNoncedata.value,
-						fg_temp_metadata: els.permMetadata.value
+						action: 'fiazm_save_temp_metadata', 
+						fiazm_post_id: postID, 
+						_fiazm_temp_noncedata: els.tempNoncedata.value,
+						_fiazm_temp_metadata: els.permMetadata.value
 					},
 					success: function(serverResponse){
 						serverResponse = JSON.parse(serverResponse);
@@ -284,19 +240,6 @@
 				});
 
 			}, 0 );
-
-		}
-
-		function fix_back_button() {
-
-			var backButton = document.querySelector('.media-menu a:first-child');
-
-			if ( backButton ) {
-
-				backButton.textContent = '← Edit Selection';
-				backButton.className = 'media-menu-item button button-large';
-
-			}
 
 		}
 
@@ -359,7 +302,7 @@
 		// INITIALIZE MANAGER WHEN DOM IS FULLY LOADED, AND ADD IT
 		// TO WINDOW FOR DEBUGGING
 
-		window.featuredGalleryManager = new FeaturedGalleryManager();
+		window.featuredIconManager = new FeaturedIconManager();
 
 	});
 

@@ -1,6 +1,6 @@
 <?php
 
-class FG_Controller {
+class FIAZM_Controller {
 
 	/***********************************************************************/
 	/***************************  CONSTRUCTOR  *****************************/
@@ -8,29 +8,19 @@ class FG_Controller {
 
 	function __construct() {
 
-		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
-
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
 
 		add_action( 'add_meta_boxes', [ $this, 'register_metabox' ] );
 
 		add_action( 'save_post', [ $this, 'update_perm_metadata_via_save_post' ], 1, 2 );
 
-		add_action( 'wp_ajax_fg_save_temp_metadata', [ $this, 'update_temp_metadata_via_ajax' ] );
+		add_action( 'wp_ajax_fiazm_save_temp_metadata', [ $this, 'update_temp_metadata_via_ajax' ] );
 
 	}
 
 	/***********************************************************************/
 	/***********************  BACK-END ADMIN SETUP  ************************/
 	/***********************************************************************/
-
-	public function load_textdomain() {
-
-		// LOAD THE TEXT DOMAIN FOR INTERNATIONALIZATION
-
-		load_plugin_textdomain( 'featured-gallery', false, dirname( plugin_basename( FG_PLUGIN_FILE ) ) . '/languages/' );
-
-	}
 
 	public function enqueue_admin_assets( $hook ) {
 
@@ -40,7 +30,7 @@ class FG_Controller {
 
 			// LOAD THE LIST OF POST TYPES THAT FUNCTIONAL GALLERIES IS ATTACHED TO
 
-			$post_types	= apply_filters( 'fg_post_types', [ 'post', 'page' ] );
+			$post_types	= apply_filters( 'fiazm_show_sidebar', [ 'post', 'page' ] );
 
 			// LOAD THE CURRENT POST
 
@@ -58,23 +48,23 @@ class FG_Controller {
 
 				// ENQUEUE OUR SCRIPT
 
-				wp_enqueue_script( 'fg-script-admin', plugin_dir_url( FG_PLUGIN_FILE ) . 'assets/scripts/fg-admin.js', [], FG_PLUGIN_VERSION );
+				wp_enqueue_script( 'fiazm-script-admin', plugin_dir_url( FIAZM_PLUGIN_FILE ) . 'assets/scripts/fiazm-admin.js', [], FIAZM_PLUGIN_VERSION );
 
 				// SENT THE SITE'S ADMIN AJAX URL TO OUR SCRIPT BY USING wp_localize_script. THIS WILL SET A GLOBAL JS
-				// VARIABLE CALLED fgInfoFromPHP, WHICH IS AN OBJECT WITH A KEY OF 'wpAdminAjaxURL' WHICH WILL HAVE THE
+				// VARIABLE CALLED fiazmInfoFromPHP, WHICH IS AN OBJECT WITH A KEY OF 'wpAdminAjaxURL' WHICH WILL HAVE THE
 				// CORRECT VALUE
 
-				wp_localize_script( 'fg-script-admin', 'fgInfoFromPHP', [ 'wpAdminAjaxURL' => admin_url('admin-ajax.php') ] );
+				wp_localize_script( 'fiazm-script-admin', 'fiazmInfoFromPHP', [ 'wpAdminAjaxURL' => admin_url('admin-ajax.php') ] );
 
 				// ENQUEUE OUT STYLESHEETS
 
-				wp_enqueue_style( 'fg-style-admin', plugin_dir_url( FG_PLUGIN_FILE ) . 'assets/stylesheets/fg-admin.css', [], FG_PLUGIN_VERSION );
+				wp_enqueue_style( 'fiazm-style-admin', plugin_dir_url( FIAZM_PLUGIN_FILE ) . 'assets/stylesheets/fiazm-admin.css', [], FIAZM_PLUGIN_VERSION );
 
-				$showSidebar = apply_filters( 'fg_show_sidebar', false );
+				$showSidebar = apply_filters( 'fiazm_show_sidebar', false );
 
 				if ( $showSidebar = false ) {
 
-					wp_enqueue_style( 'fg-style-admin-hidesidebar', plugin_dir_url( FG_PLUGIN_FILE ) . 'assets/stylesheets/fg-admin-hidesidebar.css', [], FG_PLUGIN_VERSION );
+					wp_enqueue_style( 'fiazm-style-admin-hidesidebar', plugin_dir_url( FIAZM_PLUGIN_FILE ) . 'assets/stylesheets/fiazm-admin-hidesidebar.css', [], FIAZM_PLUGIN_VERSION );
 
 				}
 
@@ -88,15 +78,15 @@ class FG_Controller {
 
 		// LOAD THE VALUES THAT WE HAVE FILTERS FOR
 
-		$post_types	= apply_filters( 'fg_post_types', [ 'post', 'page' ] );
-		$context	= apply_filters( 'fg_context', 'side' );
-		$priority	= apply_filters( 'fg_priority', 'default' );
+		$post_types	= apply_filters( 'fiazm_post_types', [ 'post', 'page' ] );
+		$context	= apply_filters( 'fiazm_context', 'side' );
+		$priority	= apply_filters( 'fiazm_priority', 'default' );
 
 		// LOOP THROUGH ALL SUPPORTED POST TYPES AND ADD THE FEATURED GALLERY METABOX TO EACH
 
 		foreach ( $post_types as $post_type ) {
 
-			add_meta_box( 'featuredgallerydiv', __( 'Featured Gallery', 'featured-gallery' ), [ $this, 'display_metabox' ], $post_type, $context, $priority );
+			add_meta_box( 'featuredicondiv', __( 'Featured Icon', 'featured-icon' ), [ $this, 'display_metabox' ], $post_type, $context, $priority );
 
 		}
 
@@ -108,21 +98,15 @@ class FG_Controller {
 
 		// ATTEMPT TO LOAD EXISTING DATA
 
-		$galleryIDs  = get_post_gallery_ids( $post->ID );
+		$iconID = get_post_icon_id( $post->ID );
 
 		// IF THERE IS DATA...
 
-		if ( count($galleryIDs) > 0 ) {
+		if ( $iconID != '' ) {
 
 			// LOOP THROUGH AND BUILD THE HTML PREVIEW
 
-			$galleryHTML = '';
-
-			foreach ( $galleryIDs as $ID ) {
-
-				$galleryHTML .= '<li><button type="button"></button><img id="' . $ID . '" src="' . wp_get_attachment_image_src( $ID, 'thumbnail' )[0] . '"></li>';
-
-			}
+			$iconHTML = '<a id="set-post-icon" href=""><img id="'.$iconID.'" src="'.wp_get_attachment_url( $iconID ).'"></a>';
 
 			// SET THE SELECT BUTTON'S TEXT
 
@@ -132,11 +116,15 @@ class FG_Controller {
 
 			$hideIfNoSelection = '';
 
+			// SET CSS STYLES TO HIDE THE SELECT BUTTON
+
+			$hideIfSelection = ' style="display:none;"';
+
 		} else {
 
 			// SET THE HTML PREVIEW TO EMPTY
 
-			$galleryHTML = '';
+			$iconHTML = '';
 
 			// SET THE SELECT BUTTON'S TEXT
 
@@ -146,33 +134,34 @@ class FG_Controller {
 
 			$hideIfNoSelection = ' style="display:none;"';
 
+			// DON'T SET CSS STYLES TO HIDE THE SELECT BUTTON
+
+			$hideIfSelection = '';
+
 		} 
-
-		// BUILD A COMMA DELIMITED STRING FROM THE GALLERY IDs, TO STORE AS POST META
-
-		$galleryString = implode(',', $galleryIDs);
 
 		// OVERWRITE THE TEMPORARY FEATURE GALLERY DATA WITH THE PERMANENT DATA. THIS IS A PRECAUTION IN CASE
 		// SOMEONE PREVIOUSLY CLICKED "Preview Changes" AND THEN EXISTED WITHOUT SAVING. BASICALLY, THE TEMP
 		// METADATA SHOULD ALWAYS REFLECT WHAT IS SHOWN IN THE PREVIEW.
 
-		update_post_meta( $post->ID, 'fg_temp_metadata', $galleryString );
+		update_post_meta( $post->ID, '_fiazm_temp_metadata', $iconID );
 
 		// BUILD THE HTML FOR THE METABOX AND ECHO IT TO THE PAGE
 
 		echo '
 
-			<input type="hidden" name="fg_temp_noncedata" id="fg_temp_noncedata" value="' . wp_create_nonce( plugin_basename( FG_PLUGIN_FILE ).'_temp' ) . '" />
-			<input type="hidden" name="fg_perm_noncedata" id="fg_perm_noncedata" value="' . wp_create_nonce( plugin_basename( FG_PLUGIN_FILE ).'_perm' ) . '" />
+			<input type="hidden" name="_fiazm_temp_noncedata" id="_fiazm_temp_noncedata" value="' . wp_create_nonce( plugin_basename( FIAZM_PLUGIN_FILE ).'_temp' ) . '" />
+			<input type="hidden" name="_fiazm_perm_noncedata" id="_fiazm_perm_noncedata" value="' . wp_create_nonce( plugin_basename( FIAZM_PLUGIN_FILE ).'_perm' ) . '" />
 
-			<p class="post-attributes-label-wrapper post-attributes-label hide-if-js">Image IDs</p>
-			<input type="text" class="hide-if-js" name="fg_perm_metadata" id="fg_perm_metadata" value="' . $galleryString . '" data-post_id="' . $post->ID . '" />
+			<p class="post-attributes-label-wrapper post-attributes-label hide-if-js">Image ID</p>
+			<input type="text" class="hide-if-js" name="_fiazm_perm_metadata" id="_fiazm_perm_metadata" value="' . $iconID . '" data-post_id="' . $post->ID . '" />
 			<p class="howto hide-if-js">Enable Javascript to use drag and drop Media Manager. Alternatively, type in the IDs of the images that you want as part of the Featured Gallery in the above text box, separating with commas.</p>
 
-			<ul id="fg-post-gallery" class="hide-if-no-js">' .$galleryHTML . '</ul>
+			<p id="fiazm-post-icon" class="hide-if-no-js">' . $iconHTML . '</p>
 
-			<button type="button" class="button hide-if-no-js" id="fg_removeall"' .$hideIfNoSelection . '>' . __( 'Remove All', 'featured-gallery' ) . '</button>
-			<button type="button" class="button hide-if-no-js" id="fg_select">' . $selectButtonText . '</button>
+			<p class="howto fiazm-controls-has-icon hide-if-no-js" id="set-post-thumbnail-desc"' . $hideIfNoSelection . '>Click the image to edit or update</p>
+			<button type="button" class="button hide-if-no-js" id="fiazm_remove"' . $hideIfNoSelection . '>' . __( 'Remove Featured Icon', 'featured-gallery' ) . '</button>
+			<button type="button" class="button hide-if-no-js" id="fiazm_select"' . $hideIfSelection . '>' . __( 'Set Featured Icon', 'featured-icon' )  . '</button>
 
 			<div style="clear:both;"></div>
 
@@ -182,7 +171,7 @@ class FG_Controller {
 
 	function update_temp_metadata_via_ajax() {
 
-		if ( ! array_key_exists( 'fg_post_id', $_POST ) ) {
+		if ( ! array_key_exists( 'fiazm_post_id', $_POST ) ) {
 
 			$response = [
 				'success' => false,
@@ -191,7 +180,7 @@ class FG_Controller {
 
 		} else {
 
-			$postID = $_POST['fg_post_id'];
+			$postID = $_POST['fiazm_post_id'];
 			$post = get_post( $postID );
 
 			$response = self::update_metadata( $postID, $post, 'temp' );
@@ -218,8 +207,8 @@ class FG_Controller {
 
 		// BUILD KEYS
 
-		$metadata_key = 'fg_'.$type.'_metadata';
-		$nonce_key = 'fg_'.$type.'_noncedata';
+		$metadata_key = '_fiazm_'.$type.'_metadata';
+		$nonce_key = '_fiazm_'.$type.'_noncedata';
 
 		// CHECK TO MAKE SURE EVERYTHING IS KOSHER
 
