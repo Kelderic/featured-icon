@@ -110,7 +110,7 @@ I've included a hook to allow you to easily integrate featured galleries into a 
 
     }
 
-    add_filter('fg_post_types', 'add_featured_galleries_to_ctp' );
+    add_filter('fiazm_post_types', 'add_featured_galleries_to_ctp' );
 
 That would add Featured Galleries to the custom post type with the slug of 'custom_post_type'. To add it to a custom post type with a slug of 'books', you'd do this:
 
@@ -118,15 +118,15 @@ That would add Featured Galleries to the custom post type with the slug of 'cust
         array_push($post_types, 'books'); // ($post_types comes in as array('post','page'). If you don't want FGs on those, you can just return a custom array instead of adding to it. )
         return $post_types;
     }
-    add_filter('fg_post_types', 'add_featured_galleries_to_ctp' );
+    add_filter('fiazm_post_types', 'add_featured_galleries_to_ctp' );
 
 = Show the Sidebar In Media Manager =
 
 By default, the sidebar is hidden in the media manager/uploader popup. However, if you'd like it to be shown, there is an easy filter that you can add to your functions.php file. Example:
 
-    function show_fg_sidebar( $show_sidebar ) {
+    function show_fiazm_sidebar( $show_sidebar ) {
         return true; // ($show_sidebar comes in a false)
-    } add_filter( 'fg_show_sidebar', 'show_fg_sidebar' );
+    } add_filter( 'fiazm_show_sidebar', 'show_fiazm_sidebar' );
 
 = Want to Help? =
 
