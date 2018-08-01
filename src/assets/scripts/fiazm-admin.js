@@ -87,7 +87,7 @@
 
 				self.el.modal.classList.add('fiazm-media-frame');
 
-				if ( ! fiazmInfoFromPHP.showDetailSidebar ) {
+				if ( fiazmInfoFromPHP.showDetailSidebar !== '1' && fiazmInfoFromPHP.showDetailSidebar !== true ) {
 					self.el.modal.classList.add('no-details-sidebar');
 				}
 
