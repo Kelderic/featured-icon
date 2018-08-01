@@ -30,7 +30,7 @@ class FIAZM_Controller {
 
 			// LOAD THE LIST OF POST TYPES THAT FUNCTIONAL GALLERIES IS ATTACHED TO
 
-			$post_types	= apply_filters( 'fiazm_show_sidebar', [ 'post', 'page' ] );
+			$post_types	= apply_filters( 'fiazm_post_types', [ 'post', 'page' ] );
 
 			// LOAD THE CURRENT POST
 
