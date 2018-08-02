@@ -208,7 +208,7 @@ class FIAZM_Controller {
 
 		// CHECK TO MAKE SURE EVERYTHING IS KOSHER
 
-		if ( ! array_key_exists( $nonce_key, $_POST ) || ! wp_verify_nonce( $_POST[$nonce_key], plugin_basename( FG_PLUGIN_FILE ).'_'.$type ) ) {
+		if ( ! array_key_exists( $nonce_key, $_POST ) || ! wp_verify_nonce( $_POST[$nonce_key], plugin_basename( FIAZM_PLUGIN_FILE ).'_'.$type ) ) {
 			return [
 				'success' => false,
 				'response' => 'There is an error with this request. It doesn\'t have a valid nonce.'
