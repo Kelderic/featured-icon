@@ -39,7 +39,7 @@
 			// DETERMINE USER SELECTIONS VIA DATA PASSED BY wp_localize_script() PHP FUNCTION. WE HAVE
 			// TO CHECK TO '1' and TRUE, BECAUSE THERE IS A BUG IN THE WORDPRESS CODE.
 
-			if ( fiazm.showDetailsSidebar === '1' || fiazm.showDetailsSidebar === true ) {
+			if ( fiazmInfoFromPHP.showDetailsSidebar === '1' || fiazmInfoFromPHP.showDetailsSidebar === true ) {
 				self.flags.showDetailsSidebar = true;
 			} else {
 				self.flags.showDetailsSidebar = false;
