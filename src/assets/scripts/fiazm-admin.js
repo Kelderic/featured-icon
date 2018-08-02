@@ -128,13 +128,33 @@
 
 			self.frame.on('insert', function() {
 
-				var selectedImage = self.frame.state().get('selection').single();
+				var imageIDs = [];
+				var imageHTML = '';
 
-				if ( selectedImage ) {
+				// LOOP THROUGH SELECTION
+
+				self.frame.state().get('selection').each(function(selectedImage) {
+
+					// ADD IMAGE ID TO ARRAY
+
+					imageIDs.push(selectedImage.attributes.id);
+
+					// BUILD PREVIEW HTML AND ADD TO STRING
+
+					url = 'thumbnail' in selectedImage.attributes.sizes ? selectedImage.attributes.sizes.thumbnail.url :  selectedImage.attributes.url;
+					id = selectedImage.attributes.id;
+
+					imageHTML += '<li><a id="set-post-icon" href=""><img id="' + selectedImage.attributes.id + '" src="' + url + '"></a></li>'
+
+				});
+
+				// IF WE HAVE ANY IMAGES, UPDATE THE METABOX AND TEMP METADATA
+
+				if ( imageIDs.length ) {
 
 					update_metabox({
-						HTMLPreview: '<a id="set-post-icon" href=""><img id="' + selectedImage.attributes.id + '" src="' + selectedImage.attributes.url + '"></a>',
-						permMetadata: selectedImage.attributes.id
+						HTMLPreview: imageHTML,
+						permMetadata: imageIDs.join(',')
 					}, self.el);
 
 					update_temp_metadata( self.el, self.postID );
