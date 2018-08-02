@@ -67,20 +67,6 @@
 /**** THUMBNAIL PREVIEW ***********************************************************************/
 /**********************************************************************************************/
 
-#featuredicondiv .inside img {
-    max-width: 100%;
-    vertical-align: top;
-    background-image: linear-gradient(45deg,rgb(196, 196, 196) 25%,transparent 25%,transparent 75%,rgb(196, 196, 196) 75%,rgb(196, 196, 196)),linear-gradient(45deg,rgb(196, 196, 196) 25%,transparent 25%,transparent 75%,rgb(196, 196, 196) 75%,rgb(196, 196, 196));
-    background-position: 0 0,10px 10px;
-    background-size: 20px 20px;
-    height: auto !important;
-	width: auto !important;
-	max-height: 400px !important;
-	min-height: 300px !important;
-	display: block !important;
-}
-
-
 #set-post-icon {
 	display: inline-block;
 	max-width: 100%;
@@ -89,4 +75,60 @@
 
 #fiazm-post-icon {
 	display:inline-block;
+}
+
+#featuredicondiv ul {
+	margin:0;
+}
+
+#featuredicondiv ul::after {
+	display:block;
+	clear:both;
+	content:"";
+}
+
+#featuredicondiv ul li {
+	margin:0 10px 10px 0;
+	position:relative;
+	float:left;
+}
+
+#featuredicondiv ul li img {
+	display:block;
+	height:150px;
+	width:150px;
+    background-image: linear-gradient(45deg,rgb(196, 196, 196) 25%,transparent 25%,transparent 75%,rgb(196, 196, 196) 75%,rgb(196, 196, 196)),linear-gradient(45deg,rgb(196, 196, 196) 25%,transparent 25%,transparent 75%,rgb(196, 196, 196) 75%,rgb(196, 196, 196));
+    background-position: 0 0,10px 10px;
+    background-size: 20px 20px;
+    border:solid 1px gray;
+}
+
+
+#featuredicondiv ul li button {
+	cursor:pointer;
+	display:none;
+	position:absolute;
+	right:5px;
+	top:5px;
+	background-color:transparent;
+	font-family:"dashicons";
+	width: 24px;
+	height:24px !important;
+	padding: 0px;
+	font-size: 24px;
+	line-height: 20px;
+	text-align: center;
+	color: rgb(70, 70, 70);
+	background-color: rgb(255, 255, 255);
+	border-width: 0px;
+	border-radius: 3px;
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.3);
+}
+
+#featuredicondiv ul li:hover button {
+	display:block;
+}
+
+#featuredicondiv ul li button:hover {
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.6);
 }

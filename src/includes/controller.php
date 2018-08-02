@@ -101,7 +101,8 @@ class FIAZM_Controller {
 
 			// LOOP THROUGH AND BUILD THE HTML PREVIEW
 
-			$iconHTML = '<a id="set-post-icon" href=""><img id="'.$iconID.'" src="'.wp_get_attachment_url( $iconID ).'"></a>';
+			//$iconHTML = '<a id="set-post-icon" href=""><img id="'.$iconID.'" src="'.wp_get_attachment_url( $iconID ).'"></a>';
+			$iconHTML .= '<li><a id="set-post-icon" href=""><img id="' . $iconID . '" src="' . wp_get_attachment_image_src( $iconID, 'thumbnail' )[0] . '"></a></li>';
 
 			// SET THE SELECT BUTTON'S TEXT
 
@@ -152,7 +153,7 @@ class FIAZM_Controller {
 			<input type="text" class="hide-if-js" name="_fiazm_perm_metadata" id="_fiazm_perm_metadata" value="' . $iconID . '" data-post_id="' . $post->ID . '" />
 			<p class="howto hide-if-js">Enable Javascript to use drag and drop Media Manager. Alternatively, type in the IDs of the images that you want as part of the Featured Gallery in the above text box, separating with commas.</p>
 
-			<p id="fiazm-post-icon" class="hide-if-no-js">' . $iconHTML . '</p>
+			<ul id="fiazm-post-icon" class="hide-if-no-js">' . $iconHTML . '</ul>
 
 			<p class="howto fiazm-controls-has-icon hide-if-no-js" id="set-post-thumbnail-desc"' . $hideIfNoSelection . '>Click the image to edit or update</p>
 			<button type="button" class="button hide-if-no-js" id="fiazm_remove"' . $hideIfNoSelection . '>' . __( 'Remove Featured Icon', 'featured-gallery' ) . '</button>
@@ -162,7 +163,7 @@ class FIAZM_Controller {
 
 		';
 
-	}
+	} // <p id="fiazm-post-icon" class="hide-if-no-js">' . $iconHTML . '</p>
 
 	function update_temp_metadata_via_ajax() {
 
