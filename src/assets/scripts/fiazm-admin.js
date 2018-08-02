@@ -33,9 +33,7 @@
 
 			// STORE ORIGINAL BUTTON VALUES
 
-			l10nOriginal = {
-				insertIntoPost: wp.media.view.l10n.insertIntoPost
-			};
+			l10nOriginal = wp.media.view.l10n;
 
 			// IF EITHER BUTTON DOESN'T EXIST, EXIT GRACEFULLY
 
@@ -119,7 +117,7 @@
 
 				// RESET THE MAIN BUTTON TEXT
 
-				wp.media.view.l10n.insertIntoPost = l10nOriginal.insertIntoPost;
+				wp.media.view.l10n = l10nOriginal;
 
 			});
 
