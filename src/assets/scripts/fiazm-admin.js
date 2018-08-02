@@ -18,6 +18,7 @@
 
 			// SETUP VARIABLES FROM USER-DEFINED PARAMETERS
 
+			self.flags = {};
 			self.frame = null;
 			self.el = {
 				buttonSelect: document.querySelector('#fiazm_select'),
@@ -34,6 +35,15 @@
 			// STORE ORIGINAL BUTTON VALUES
 
 			l10nOriginal = wp.media.view.l10n;
+
+			// DETERMINE USER SELECTIONS VIA DATA PASSED BY wp_localize_script() PHP FUNCTION. WE HAVE
+			// TO CHECK TO '1' and TRUE, BECAUSE THERE IS A BUG IN THE WORDPRESS CODE.
+
+			if ( fiazm.showDetailsSidebar === '1' || fiazm.showDetailsSidebar === true ) {
+				self.flags.showDetailsSidebar = true;
+			} else {
+				self.flags.showDetailsSidebar = false;
+			}
 
 			// IF EITHER BUTTON DOESN'T EXIST, EXIT GRACEFULLY
 
@@ -85,7 +95,7 @@
 
 				self.el.modal.classList.add('fiazm-media-frame');
 
-				if ( fiazmInfoFromPHP.showDetailSidebar !== '1' && fiazmInfoFromPHP.showDetailSidebar !== true ) {
+				if ( ! self.flags.showDetailsSidebar ) {
 					self.el.modal.classList.add('no-details-sidebar');
 				}
 
