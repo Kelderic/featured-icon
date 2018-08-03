@@ -17,7 +17,7 @@ There are two ways to install this plugin.
 Manual:
 
 1. Upload the `featured-icon` folder to the `/wp-content/plugins/` directory
-2. Go to the 'Plugins' menu in WordPress, find 'Featured Galleries' in the list, and select 'Activate'.
+2. Go to the 'Plugins' menu in WordPress, find 'Featured Icon' in the list, and select 'Activate'.
 
 Through the WP Repository:
 
